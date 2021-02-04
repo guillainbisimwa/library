@@ -22,11 +22,7 @@ function Book(title, author, pages, readStatus) {
   };
 }
 
-const card = (arr) => {
-
-  const allDeleteBtn = getAllElementsOfType('.dlt-button');
-  const allToggleBtn = getAllElementsOfType('.toggle');
-
+const Card = (arr) => {
   const cleanNoticeBoard = () => {
     setInnerHTML(getDomElement('#title-notice'), '');
     setInnerHTML(getDomElement('#author-notice'), '');
@@ -54,18 +50,25 @@ const card = (arr) => {
         </div>
       </div>
     </div>`;
+    return card;
   }
 
-  const printCard = (arr) => {
+  const printCard = () => {
     const markup = arr.map(elt => addCard(arr, elt)).join('');
     const booksList = getDomElement('#books_list');
     setInnerHTML(booksList, markup);
-  
+
+    cleanNoticeBoard();
+    cleanForm();
+
+    const allDeleteBtn = getAllElementsOfType('.dlt-button');
+    const allToggleBtn = getAllElementsOfType('.toggle');
+      
     addEvent(allDeleteBtn, 'click', deleteOneCard);
     addEvent(allToggleBtn, 'click', toggleBookStatus);
   }
 
-  return { addBookToLibrary, printCard }
+  return { printCard }
 }
 
 const MyBook = () => {
@@ -129,33 +132,31 @@ addBook.addEventListener('click', () => {
   addBookToLibrary();
   if(validateForm(addBookToLibrary())){
     myLibrary.push(addBookToLibrary());
+    const { printCard } = Card(myLibrary);
+    printCard();
+    toggleNewBook();
+
   }
   else{
     notifyUser(addBookToLibrary());
   }
-  console.log(myLibrary)
-
-  //card
-  // const myCard = card()
-
-  // addBookToLibrary();
-  // printCard(myLibrary);
-  // cleanForm();
-  // toggleNewBook();
 });
 
 function deleteOneCard(event) {
+  console.log('bree')
   const clickedButton = event.currentTarget;
   const correspondingBookIndex = clickedButton.dataset.indexNumber;
   myLibrary.splice(correspondingBookIndex, 1);
-  printCard(myLibrary);
+  const { printCard } = Card(myLibrary);
+  printCard();
 }
 
 function toggleBookStatus(event) {
   const bookIndex = event.currentTarget.dataset.indexNumber;
   const book = myLibrary[bookIndex];
   book.toggleStatus();
-  printCard(myLibrary);
+  const { printCard } = Card(myLibrary);
+  printCard();
 }
 
 newBook.addEventListener('click', toggleNewBook);
