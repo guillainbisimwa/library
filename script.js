@@ -72,9 +72,6 @@ const Card = (arr) => {
 }
 
 const MyBook = () => {
-  const toggleStatus = () => {
-    readStatus = !getReadStatus();
-  };
 
   const validateForm = (obj) => {
     const formValues = Object.values(obj);
@@ -114,7 +111,7 @@ const MyBook = () => {
     return new Book(title, author, pages, readStatus);
   }
 
-  return { toggleStatus, addBookToLibrary, notifyUser, validateForm }
+  return { addBookToLibrary, notifyUser, validateForm }
 }
 
 const addBook = getDomElement('#addBook');
@@ -143,7 +140,6 @@ addBook.addEventListener('click', () => {
 });
 
 function deleteOneCard(event) {
-  console.log('bree')
   const clickedButton = event.currentTarget;
   const correspondingBookIndex = clickedButton.dataset.indexNumber;
   myLibrary.splice(correspondingBookIndex, 1);
