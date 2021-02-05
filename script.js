@@ -13,37 +13,37 @@ import {
 const myLibrary = [];
 
 class Book {
-  constructor(title, author, pages, readStatus){
+  constructor(title, author, pages, readStatus) {
     this.title = title;
     this.author = author;
     this.pages = pages;
     this.readStatus = readStatus;
   }
-  
+
   toggleStatus() {
     this.readStatus = !this.readStatus;
-  };
+  }
 }
 
 class Card {
-  constructor(arr){
+  constructor(arr) {
     this.arr = arr;
   }
 
-  cleanNoticeBoard(){
+  cleanNoticeBoard() {
     setInnerHTML(getDomElement('#title-notice'), '');
     setInnerHTML(getDomElement('#author-notice'), '');
     setInnerHTML(getDomElement('#pages-notice'), '');
   }
 
-  cleanForm(){
+  cleanForm() {
     setValue(getDomElement('#title'), '');
     setValue(getDomElement('#author'), '');
     setValue(getDomElement('#pages'), '');
     setCheckedValue(getDomElement('#checkbox'), false);
   }
 
-  addCard(arr, obj){
+  addCard(arr, obj) {
     const card = `<div class='col-sm-4 my-2'>
       <div class='card text-center text-dark bg-light'>
         <div class='card-header'>
@@ -60,7 +60,7 @@ class Card {
     return card;
   }
 
-  printCard(){
+  printCard() {
     const markup = this.arr.map(elt => this.addCard(this.arr, elt)).join('');
     const booksList = getDomElement('#books_list');
     setInnerHTML(booksList, markup);
@@ -70,18 +70,17 @@ class Card {
 
     const allDeleteBtn = getAllElementsOfType('.dlt-button');
     const allToggleBtn = getAllElementsOfType('.toggle');
-      
+
     addEvent(allDeleteBtn, 'click', deleteOneCard);
     addEvent(allToggleBtn, 'click', toggleBookStatus);
   }
 }
 
-class MyBook{
-
-  validateForm(obj){
+class MyBook {
+  validateForm(obj) {
     const formValues = Object.values(obj);
     let emptyInputTagsCount = 0;
-    for (let i = 0; i < formValues.length -1 ; i += 1) {
+    for (let i = 0; i < formValues.length - 1; i += 1) {
       if (formValues[i].length === 0) emptyInputTagsCount += 1;
     }
 
@@ -89,25 +88,25 @@ class MyBook{
     return true;
   }
 
-  notifyUser(obj){
+  notifyUser(obj) {
     titleNotice = getDomElement('#title-notice');
     authorNotice = getDomElement('#author-notice');
     pagesNotice = getDomElement('#pages-notice');
-  
+
     if (obj.title.length === 0) {
       setInnerHTML(titleNotice, 'Title is required');
     }
-  
+
     if (obj.author.length === 0) {
       setInnerHTML(authorNotice, 'Author is required');
     }
-  
+
     if (obj.pages.length === 0) {
       setInnerHTML(pagesNotice, 'Number of pages is required');
     }
   }
 
-  addBookToLibrary(){
+  addBookToLibrary() {
     const title = getDomElement('#title').value;
     const author = getDomElement('#author').value;
     const pages = getDomElement('#pages').value;
@@ -128,16 +127,14 @@ function toggleNewBook() {
 }
 
 addBook.addEventListener('click', () => {
-  let myBook = new MyBook();
+  const myBook = new MyBook();
   myBook.addBookToLibrary();
-  if(myBook.validateForm(myBook.addBookToLibrary())){
+  if (myBook.validateForm(myBook.addBookToLibrary())) {
     myLibrary.push(myBook.addBookToLibrary());
-    let card = new Card(myLibrary);
+    const card = new Card(myLibrary);
     card.printCard();
     toggleNewBook();
-
-  }
-  else{
+  } else {
     myBook.notifyUser(myBook.addBookToLibrary());
   }
 });
@@ -146,7 +143,7 @@ function deleteOneCard(event) {
   const clickedButton = event.currentTarget;
   const correspondingBookIndex = clickedButton.dataset.indexNumber;
   myLibrary.splice(correspondingBookIndex, 1);
-  let card = new Card(myLibrary);
+  const card = new Card(myLibrary);
   card.printCard();
 }
 
@@ -154,7 +151,7 @@ function toggleBookStatus(event) {
   const bookIndex = event.currentTarget.dataset.indexNumber;
   const book = myLibrary[bookIndex];
   book.toggleStatus();
-  let card = new Card(myLibrary);
+  const card = new Card(myLibrary);
   card.printCard();
 }
 
