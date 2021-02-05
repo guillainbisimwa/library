@@ -25,21 +25,25 @@ class Book {
   };
 }
 
-const Card = (arr) => {
-  const cleanNoticeBoard = () => {
+class Card {
+  constructor(arr){
+    this.arr = arr;
+  }
+
+  cleanNoticeBoard(){
     setInnerHTML(getDomElement('#title-notice'), '');
     setInnerHTML(getDomElement('#author-notice'), '');
     setInnerHTML(getDomElement('#pages-notice'), '');
   }
 
-  const cleanForm = () => {
+  cleanForm(){
     setValue(getDomElement('#title'), '');
     setValue(getDomElement('#author'), '');
     setValue(getDomElement('#pages'), '');
     setCheckedValue(getDomElement('#checkbox'), false);
   }
 
-  const addCard = (arr, obj) =>{
+  addCard(arr, obj){
     const card = `<div class='col-sm-4 my-2'>
       <div class='card text-center text-dark bg-light'>
         <div class='card-header'>
@@ -56,13 +60,13 @@ const Card = (arr) => {
     return card;
   }
 
-  const printCard = () => {
-    const markup = arr.map(elt => addCard(arr, elt)).join('');
+  printCard(){
+    const markup = this.arr.map(elt => this.addCard(this.arr, elt)).join('');
     const booksList = getDomElement('#books_list');
     setInnerHTML(booksList, markup);
 
-    cleanNoticeBoard();
-    cleanForm();
+    this.cleanNoticeBoard();
+    this.cleanForm();
 
     const allDeleteBtn = getAllElementsOfType('.dlt-button');
     const allToggleBtn = getAllElementsOfType('.toggle');
@@ -70,8 +74,6 @@ const Card = (arr) => {
     addEvent(allDeleteBtn, 'click', deleteOneCard);
     addEvent(allToggleBtn, 'click', toggleBookStatus);
   }
-
-  return { printCard }
 }
 
 const MyBook = () => {
@@ -132,8 +134,8 @@ addBook.addEventListener('click', () => {
   addBookToLibrary();
   if(validateForm(addBookToLibrary())){
     myLibrary.push(addBookToLibrary());
-    const { printCard } = Card(myLibrary);
-    printCard();
+    let card = new Card(myLibrary);
+    card.printCard();
     toggleNewBook();
 
   }
@@ -146,16 +148,16 @@ function deleteOneCard(event) {
   const clickedButton = event.currentTarget;
   const correspondingBookIndex = clickedButton.dataset.indexNumber;
   myLibrary.splice(correspondingBookIndex, 1);
-  const { printCard } = Card(myLibrary);
-  printCard();
+  let card = new Card(myLibrary);
+  card.printCard();
 }
 
 function toggleBookStatus(event) {
   const bookIndex = event.currentTarget.dataset.indexNumber;
   const book = myLibrary[bookIndex];
   book.toggleStatus();
-  const { printCard } = Card(myLibrary);
-  printCard();
+  let card = new Card(myLibrary);
+  card.printCard();
 }
 
 newBook.addEventListener('click', toggleNewBook);
