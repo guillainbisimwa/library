@@ -76,9 +76,9 @@ class Card {
   }
 }
 
-const MyBook = () => {
+class MyBook{
 
-  const validateForm = (obj) => {
+  validateForm(obj){
     const formValues = Object.values(obj);
     let emptyInputTagsCount = 0;
     for (let i = 0; i < formValues.length -1 ; i += 1) {
@@ -89,10 +89,10 @@ const MyBook = () => {
     return true;
   }
 
-  const notifyUser = (obj) => {
-    const titleNotice = getDomElement('#title-notice');
-    const authorNotice = getDomElement('#author-notice');
-    const pagesNotice = getDomElement('#pages-notice');
+  notifyUser(obj){
+    titleNotice = getDomElement('#title-notice');
+    authorNotice = getDomElement('#author-notice');
+    pagesNotice = getDomElement('#pages-notice');
   
     if (obj.title.length === 0) {
       setInnerHTML(titleNotice, 'Title is required');
@@ -107,7 +107,7 @@ const MyBook = () => {
     }
   }
 
-  const addBookToLibrary = () => {
+  addBookToLibrary(){
     const title = getDomElement('#title').value;
     const author = getDomElement('#author').value;
     const pages = getDomElement('#pages').value;
@@ -115,8 +115,6 @@ const MyBook = () => {
 
     return new Book(title, author, pages, readStatus);
   }
-
-  return { addBookToLibrary, notifyUser, validateForm }
 }
 
 const addBook = getDomElement('#addBook');
@@ -130,17 +128,17 @@ function toggleNewBook() {
 }
 
 addBook.addEventListener('click', () => {
-  const {addBookToLibrary, validateForm, notifyUser } = MyBook();
-  addBookToLibrary();
-  if(validateForm(addBookToLibrary())){
-    myLibrary.push(addBookToLibrary());
+  let myBook = new MyBook();
+  myBook.addBookToLibrary();
+  if(myBook.validateForm(myBook.addBookToLibrary())){
+    myLibrary.push(myBook.addBookToLibrary());
     let card = new Card(myLibrary);
     card.printCard();
     toggleNewBook();
 
   }
   else{
-    notifyUser(addBookToLibrary());
+    myBook.notifyUser(myBook.addBookToLibrary());
   }
 });
 
