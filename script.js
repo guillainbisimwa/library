@@ -1,5 +1,8 @@
 /* eslint-disable func-names */
+/* eslint-disable class-methods-use-this */
 /* eslint-disable no-use-before-define */
+/* eslint-disable max-classes-per-file */
+
 import {
   getDomElement,
   setInnerHTML,
@@ -89,9 +92,9 @@ class MyBook {
   }
 
   notifyUser(obj) {
-    titleNotice = getDomElement('#title-notice');
-    authorNotice = getDomElement('#author-notice');
-    pagesNotice = getDomElement('#pages-notice');
+    const titleNotice = getDomElement('#title-notice');
+    const authorNotice = getDomElement('#author-notice');
+    const pagesNotice = getDomElement('#pages-notice');
 
     if (obj.title.length === 0) {
       setInnerHTML(titleNotice, 'Title is required');
