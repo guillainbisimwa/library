@@ -1,5 +1,8 @@
 /* eslint-disable func-names */
+/* eslint-disable class-methods-use-this */
 /* eslint-disable no-use-before-define */
+/* eslint-disable max-classes-per-file */
+
 import {
   getDomElement,
   setInnerHTML,
@@ -12,113 +15,108 @@ import {
 
 const myLibrary = [];
 
-function Book(title, author, pages, readStatus) {
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  this.readStatus = readStatus;
-  this.toggleStatus = function () {
+class Book {
+  constructor(title, author, pages, readStatus) {
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.readStatus = readStatus;
+  }
+
+  toggleStatus() {
     this.readStatus = !this.readStatus;
-  };
-}
-
-function getUserInput() {
-  const title = getDomElement('#title').value;
-  const author = getDomElement('#author').value;
-  const pages = getDomElement('#pages').value;
-  const readStatus = getDomElement('#checkbox').checked;
-
-  return {
-    title,
-    author,
-    pages,
-    readStatus,
-  };
-}
-
-function validateForm(obj) {
-  const formValues = Object.values(obj);
-  let emptyInputTagsCount = 0;
-  for (let i = 0; i < formValues.length; i += 1) {
-    if (formValues[i].length === 0) emptyInputTagsCount += 1;
-  }
-
-  if (emptyInputTagsCount > 0) return false;
-  return true;
-}
-
-function notifyUser(obj) {
-  const titleNotice = getDomElement('#title-notice');
-  const authorNotice = getDomElement('#author-notice');
-  const pagesNotice = getDomElement('#pages-notice');
-
-  if (obj.title.length === 0) {
-    setInnerHTML(titleNotice, 'Title is required');
-  }
-
-  if (obj.author.length === 0) {
-    setInnerHTML(authorNotice, 'Author is required');
-  }
-
-  if (obj.pages.length === 0) {
-    setInnerHTML(pagesNotice, 'Number of pages is required');
   }
 }
 
-function cleanNoticeBoard() {
-  setInnerHTML(getDomElement('#title-notice'), '');
-  setInnerHTML(getDomElement('#author-notice'), '');
-  setInnerHTML(getDomElement('#pages-notice'), '');
-}
+class Card {
+  constructor(arr) {
+    this.arr = arr;
+  }
 
-function cleanForm() {
-  setValue(getDomElement('#title'), '');
-  setValue(getDomElement('#author'), '');
-  setValue(getDomElement('#pages'), '');
-  setCheckedValue(getDomElement('#checkbox'), false);
-}
+  cleanNoticeBoard() {
+    setInnerHTML(getDomElement('#title-notice'), '');
+    setInnerHTML(getDomElement('#author-notice'), '');
+    setInnerHTML(getDomElement('#pages-notice'), '');
+  }
 
-function addCard(arr, obj) {
-  const card = `<div class='col-sm-4 my-2'>
-    <div class='card text-center text-dark bg-light'>
-      <div class='card-header'>
-        ${obj.title}
+  cleanForm() {
+    setValue(getDomElement('#title'), '');
+    setValue(getDomElement('#author'), '');
+    setValue(getDomElement('#pages'), '');
+    setCheckedValue(getDomElement('#checkbox'), false);
+  }
+
+  addCard(arr, obj) {
+    const card = `<div class='col-sm-4 my-2'>
+      <div class='card text-center text-dark bg-light'>
+        <div class='card-header'>
+          ${obj.title}
+        </div>
+        <div class='card-body'>
+          <h5 class='card-title'>${obj.author}</h5>
+          <p class='card-text'>${obj.pages} pages</p>
+          <a href='#' class="btn ${obj.readStatus ? 'btn-success' : 'btn-primary'} toggle" data-index-number="${arr.indexOf(obj)}">${obj.readStatus ? 'Read' : 'Not read'}</a>
+          <a href='#' class='btn btn-danger dlt-button' data-index-number="${arr.indexOf(obj)}">Delete</a>
+        </div>
       </div>
-      <div class='card-body'>
-        <h5 class='card-title'>${obj.author}</h5>
-        <p class='card-text'>${obj.pages} pages</p>
-        <a href='#' class="btn ${obj.readStatus ? 'btn-success' : 'btn-primary'} toggle" data-index-number="${arr.indexOf(obj)}">${obj.readStatus ? 'Read' : 'Not read'}</a>
-        <a href='#' class='btn btn-danger dlt-button' data-index-number="${arr.indexOf(obj)}">Delete</a>
-      </div>
-    </div>
-  </div>`;
+    </div>`;
+    return card;
+  }
 
-  return card;
+  printCard() {
+    const markup = this.arr.map(elt => this.addCard(this.arr, elt)).join('');
+    const booksList = getDomElement('#books_list');
+    setInnerHTML(booksList, markup);
+
+    this.cleanNoticeBoard();
+    this.cleanForm();
+
+    const allDeleteBtn = getAllElementsOfType('.dlt-button');
+    const allToggleBtn = getAllElementsOfType('.toggle');
+
+    addEvent(allDeleteBtn, 'click', deleteOneCard);
+    addEvent(allToggleBtn, 'click', toggleBookStatus);
+  }
 }
 
-function printCard(arr) {
-  const markup = arr.map(elt => addCard(arr, elt)).join('');
-  const booksList = getDomElement('#books_list');
-  setInnerHTML(booksList, markup);
-  const allDeleteBtn = getAllElementsOfType('.dlt-button');
-  const allToggleBtn = getAllElementsOfType('.toggle');
+class MyBook {
+  validateForm(obj) {
+    const formValues = Object.values(obj);
+    let emptyInputTagsCount = 0;
+    for (let i = 0; i < formValues.length - 1; i += 1) {
+      if (formValues[i].length === 0) emptyInputTagsCount += 1;
+    }
 
-  addEvent(allDeleteBtn, 'click', deleteOneCard);
-  addEvent(allToggleBtn, 'click', toggleBookStatus);
-}
+    if (emptyInputTagsCount > 0) return false;
+    return true;
+  }
 
-// eslint-disable-next-line consistent-return
-function addBookToLibrary() {
-  cleanNoticeBoard();
+  notifyUser(obj) {
+    const titleNotice = getDomElement('#title-notice');
+    const authorNotice = getDomElement('#author-notice');
+    const pagesNotice = getDomElement('#pages-notice');
 
-  const formIsValid = validateForm(getUserInput());
-  if (!formIsValid) return notifyUser(getUserInput());
+    if (obj.title.length === 0) {
+      setInnerHTML(titleNotice, 'Title is required');
+    }
 
-  const {
-    title, author, pages, readStatus,
-  } = getUserInput();
-  const newBook = new Book(title, author, pages, readStatus);
-  myLibrary.push(newBook);
+    if (obj.author.length === 0) {
+      setInnerHTML(authorNotice, 'Author is required');
+    }
+
+    if (obj.pages.length === 0) {
+      setInnerHTML(pagesNotice, 'Number of pages is required');
+    }
+  }
+
+  addBookToLibrary() {
+    const title = getDomElement('#title').value;
+    const author = getDomElement('#author').value;
+    const pages = getDomElement('#pages').value;
+    const readStatus = getDomElement('#checkbox').checked;
+
+    return new Book(title, author, pages, readStatus);
+  }
 }
 
 const addBook = getDomElement('#addBook');
@@ -132,24 +130,32 @@ function toggleNewBook() {
 }
 
 addBook.addEventListener('click', () => {
-  addBookToLibrary();
-  printCard(myLibrary);
-  cleanForm();
-  toggleNewBook();
+  const myBook = new MyBook();
+  myBook.addBookToLibrary();
+  if (myBook.validateForm(myBook.addBookToLibrary())) {
+    myLibrary.push(myBook.addBookToLibrary());
+    const card = new Card(myLibrary);
+    card.printCard();
+    toggleNewBook();
+  } else {
+    myBook.notifyUser(myBook.addBookToLibrary());
+  }
 });
 
 function deleteOneCard(event) {
   const clickedButton = event.currentTarget;
   const correspondingBookIndex = clickedButton.dataset.indexNumber;
   myLibrary.splice(correspondingBookIndex, 1);
-  printCard(myLibrary);
+  const card = new Card(myLibrary);
+  card.printCard();
 }
 
 function toggleBookStatus(event) {
   const bookIndex = event.currentTarget.dataset.indexNumber;
   const book = myLibrary[bookIndex];
   book.toggleStatus();
-  printCard(myLibrary);
+  const card = new Card(myLibrary);
+  card.printCard();
 }
 
 newBook.addEventListener('click', toggleNewBook);
