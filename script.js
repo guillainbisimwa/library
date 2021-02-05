@@ -12,12 +12,15 @@ import {
 
 const myLibrary = [];
 
-function Book(title, author, pages, readStatus) {
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  this.readStatus = readStatus;
-  this.toggleStatus = function () {
+class Book {
+  constructor(title, author, pages, readStatus){
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.readStatus = readStatus;
+  }
+  
+  toggleStatus() {
     this.readStatus = !this.readStatus;
   };
 }
